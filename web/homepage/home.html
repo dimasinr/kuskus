@@ -1,0 +1,101 @@
+{% extends "partials/base.html" %}
+{% load general_function %}
+
+{% block content %}
+<main class="container">
+  <h1>Thread KusKus</h1>
+
+  
+  <div class="col-md-12">
+
+      <div class="d-flex justify-content-between flex-wrap mt-2">
+      
+        <div class="col-md-8 mt-4">
+          {% if request.user.abstractuser %}
+            <div class="card card-shadow">
+              <div class="card-body">
+                <form action="" method="POST" id="thread">
+                  {% csrf_token %}
+                  <strong> Buat Thread Anda</strong> 
+                  <!-- <div class="input-group mt-2">
+                    <input type="file" class="form-control" name="foto" id="foto">
+                    <label class="input-group-text" for="foto">Upload Gambar (Opsional)</label>
+                  </div> -->
+                  <div class="input-group mt-1">
+                    <textarea class="form-control" name="content" aria-label="With textarea" required></textarea>
+                  </div>
+                  <div class="d-flex justify-content-end mt-2">
+                    <button class="btn btn-primary" form="thread" type="submit">Send</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+         {% endif %}
+        {% for fd in feedback %}
+            <div class="card card-shadow mt-3">
+              <div class="card-body">
+                <a style="text-decoration: none;" href="{% url 'detail_thread' fd.ref_thread.id %}"><strong>{{fd.ref_thread.content}}</strong></a>
+                <br>
+                <div class="mt-3 mb-2">
+                  {% if fd.user.foto %}
+                    <img src="/media/{{fd.user.foto}}" style="width: 30px; height: 30px; border-radius: 50%;" alt=""> @{{fd.user.user.username}} 
+                  {% else %}
+                    <img src="https://i.pinimg.com/originals/8e/6c/bc/8e6cbc70c7986ece841498551b7a9647.jpg" style="width: 30px; height: 30px; border-radius: 50%;" alt=""> @{{fd.user.user.username}} 
+                  {% endif %} 
+                </div>
+                <span>
+                  {{fd.comment}}
+                </span>
+                <div class="d-flex justify-content-end mt-4 align-items-center">
+                  <small class="text-secondary">{{fd.created}}</small>
+                </div>
+              </div>
+            </div>
+        {% endfor %}
+      </div>
+
+      <div class="col-md-3">
+        <div class="card card-shadow">
+          <div class="card-body">
+            Search Thread
+            <form action="" method="get">
+              <input type="search" id="search" name="search" placeholder="Ketik sesuatu...">
+            </form>
+          </div>
+        </div>
+        {% for th in thread %}
+          <div class="card card-shadow mt-3">
+            <div class="card-image">
+              {% if th.gambar %}
+                <img src="/media/{{th.gambar}}" style="object-fit: cover; height: 130px; width: 100%; border-radius: 15px 15px 0px 0px;" alt="">
+              {% endif %}
+            </div>
+            <div class="card-body">
+              <a style="text-decoration: none;" href="{% url 'detail_thread' th.id %}"><strong>{{th.content}}</strong></a>
+              <br>
+              <div class="mt-3 mb-2">
+                {% if th.author.foto %}
+                  <img src="/media/{{th.author.foto}}" style="width: 30px; height: 30px; border-radius: 50%;" alt=""> @{{th.author.user.username}} 
+                {% else %}
+                  <img src="https://i.pinimg.com/originals/8e/6c/bc/8e6cbc70c7986ece841498551b7a9647.jpg" style="width: 30px; height: 30px; border-radius: 50%;" alt=""> @{{th.author.user.username}} 
+                {% endif %} 
+              </div>
+              <div class="d-flex justify-content-end mt-4 align-items-center">
+                <small class="text-secondary">{{th.created}}</small>
+              </div>
+
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+
+    </div>
+  </div>
+
+</main>
+<script>
+  let params = new URLSearchParams(document.location.search);
+  let search = params.get('search')
+  document.getElementById('search').value = search
+</script>
+{% endblock content %}
